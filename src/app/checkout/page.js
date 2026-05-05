@@ -1,0 +1,230 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import OrderSummary from "@/components/order/OrderSummary";
+import StripePaymentForm from "@/components/payment/StripePaymentForm";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
+
+const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
+
+export default function CheckoutPage() {
+  const [items, setItems] = useState([]);
+  const [clientSecret, setClientSecret] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("stripe");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+
+  async function placeCashOrder() {
+    setError("");
+    setSuccess("");
+    setIsPlacingOrder(true);
+
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to place order.");
+      }
+
+      setItems([]);
+      setSuccess(`Cash on Delivery order #${data.order.id} placed successfully.`);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsPlacingOrder(false);
+    }
+  }
+
+  function handlePaidOrderSuccess(order) {
+    setItems([]);
+    setSuccess(`Paid order #${order.id} placed successfully.`);
+  }
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadCart() {
+      try {
+        const response = await fetch("/api/cart", {
+          signal: controller.signal,
+        });
+        const data = await response.json();
+
+        if (response.status === 401) {
+          throw new Error("Please login before checkout.");
+        }
+
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to load checkout.");
+        }
+
+        setItems(data.cart.items);
+
+        if (data.cart.items.length > 0 && stripePublishableKey) {
+          const paymentResponse = await fetch("/api/payments/create-intent", {
+            method: "POST",
+            signal: controller.signal,
+          });
+          const paymentData = await paymentResponse.json();
+
+          if (!paymentResponse.ok) {
+            throw new Error(
+              paymentData.message || "Failed to prepare card payment."
+            );
+          }
+
+          setClientSecret(paymentData.clientSecret);
+        }
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          setError(error.message);
+          setItems([]);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadCart();
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
+  return (
+    <section className="space-y-8">
+      <div className="space-y-3">
+        <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+          Checkout
+        </p>
+        <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          Place your order
+        </h1>
+        <p className="max-w-2xl text-slate-600">
+          Confirm your cart and convert it into an order.
+        </p>
+      </div>
+
+      {error ? (
+        <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </p>
+      ) : null}
+
+      {success ? (
+        <Card className="space-y-4 border-emerald-200 bg-emerald-50">
+          <p className="font-semibold text-emerald-800">{success}</p>
+          <Button href="/products" variant="secondary">
+            Continue Shopping
+          </Button>
+        </Card>
+      ) : null}
+
+      {isLoading ? (
+        <p className="rounded-xl bg-white p-6 text-center text-sm text-slate-600 shadow-md shadow-slate-200/60">
+          Loading checkout...
+        </p>
+      ) : null}
+
+      {!isLoading && !success && items.length === 0 ? (
+        <Card className="space-y-4 text-center">
+          <h2 className="text-lg font-semibold text-slate-950">
+            No items to checkout
+          </h2>
+          <p className="text-sm text-slate-600">
+            Add products to your cart before placing an order.
+          </p>
+          <div className="flex justify-center gap-3">
+            <Button href="/products">Browse Products</Button>
+            <Button href="/auth/login" variant="secondary">
+              Login
+            </Button>
+          </div>
+        </Card>
+      ) : null}
+
+      {!isLoading && !success && items.length > 0 ? (
+        <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+          <OrderSummary items={items} />
+
+          <Card className="h-fit space-y-4">
+          <h2 className="text-lg font-semibold text-slate-950">Payment</h2>
+
+            <div className="grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("stripe")}
+                className={[
+                  "rounded-lg px-3 py-2 text-sm font-semibold transition-colors",
+                  paymentMethod === "stripe"
+                    ? "bg-white text-slate-950 shadow-sm"
+                    : "text-slate-600 hover:text-slate-950",
+                ].join(" ")}
+              >
+                Card
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("cash_on_delivery")}
+                className={[
+                  "rounded-lg px-3 py-2 text-sm font-semibold transition-colors",
+                  paymentMethod === "cash_on_delivery"
+                    ? "bg-white text-slate-950 shadow-sm"
+                    : "text-slate-600 hover:text-slate-950",
+                ].join(" ")}
+              >
+                Cash
+              </button>
+            </div>
+
+            {paymentMethod === "stripe" ? (
+              stripePromise && clientSecret ? (
+                <Elements stripe={stripePromise} options={{ clientSecret }}>
+                  <StripePaymentForm onSuccess={handlePaidOrderSuccess} />
+                </Elements>
+              ) : (
+                <p className="rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                  Card payment is not configured. Use Cash on Delivery.
+                </p>
+              )
+            ) : (
+              <div className="space-y-4">
+                <p className="text-sm leading-6 text-slate-600">
+                  Pay when your order arrives. The order will be created with a
+                  pending status.
+                </p>
+                <Button
+                  type="button"
+                  className="w-full"
+                  onClick={placeCashOrder}
+                  disabled={isPlacingOrder}
+                >
+                  {isPlacingOrder ? "Placing Order..." : "Place COD Order"}
+                </Button>
+              </div>
+            )}
+            <Link
+              href="/cart"
+              className="block text-center text-sm font-semibold text-slate-600 hover:text-slate-950"
+            >
+              Back to Cart
+            </Link>
+          </Card>
+        </div>
+      ) : null}
+    </section>
+  );
+}
