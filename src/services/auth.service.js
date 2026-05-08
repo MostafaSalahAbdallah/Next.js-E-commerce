@@ -1,18 +1,23 @@
 import bcrypt from "bcrypt";
-import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import connectDB from "@/lib/db";
 import User from "@/models/User";
-import { sendVerificationEmail } from "@/services/email.service";
+import {
+  sendVerificationCodeEmail,
+  sendWelcomeEmail,
+} from "@/services/email.service";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const TOKEN_EXPIRES_IN = "7d";
-const VERIFICATION_TOKEN_BYTES = 32;
-const VERIFICATION_TOKEN_EXPIRES_IN_MS = 1000 * 60 * 60 * 24;
 const REGISTRATION_ROLES = ["customer", "seller"];
+const VERIFICATION_CODE_EXPIRES_IN_MS = 1000 * 60 * 30; // 30 minutes
 
 function validateEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function generateVerificationCode() {
+  return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
 function createAuthError(message, status = 400) {
@@ -48,19 +53,6 @@ function sanitizeUser(user) {
   };
 }
 
-function hashToken(token) {
-  return crypto.createHash("sha256").update(token).digest("hex");
-}
-
-function createVerificationToken() {
-  const token = crypto.randomBytes(VERIFICATION_TOKEN_BYTES).toString("hex");
-
-  return {
-    token,
-    tokenHash: hashToken(token),
-    expiresAt: new Date(Date.now() + VERIFICATION_TOKEN_EXPIRES_IN_MS),
-  };
-}
 
 export function verifyAuthToken(token) {
   if (!JWT_SECRET) {
@@ -106,46 +98,58 @@ export async function registerUser({ email, password, role = "customer" }) {
     throw createAuthError("Email is already registered.", 409);
   }
 
+  // Auto-assign admin role for admin email
+  const finalRole = normalizedEmail === process.env.ADMIN_EMAIL?.toLowerCase()
+    ? "admin"
+    : normalizedRole;
+
   const hashedPassword = await bcrypt.hash(password, 12);
-  const verification = createVerificationToken();
+  const verificationCode = generateVerificationCode();
+  const codeExpiresAt = new Date(Date.now() + VERIFICATION_CODE_EXPIRES_IN_MS);
+
   const user = await User.create({
     email: normalizedEmail,
     password: hashedPassword,
-    role: normalizedRole,
+    role: finalRole,
     isVerified: false,
-    emailVerificationToken: verification.tokenHash,
-    emailVerificationTokenExpiresAt: verification.expiresAt,
+    emailVerificationToken: verificationCode,
+    emailVerificationTokenExpiresAt: codeExpiresAt,
   });
 
-  await sendVerificationEmail(user, verification.token);
+  await sendVerificationCodeEmail(user, verificationCode);
 
   return {
     user: sanitizeUser(user),
-    verificationToken: verification.token,
   };
 }
 
-export async function verifyUserEmail(token) {
-  if (!token) {
-    throw createAuthError("Verification token is required.");
+export async function verifyUserEmail({ email, code }) {
+  const normalizedEmail = email?.trim().toLowerCase();
+  const verificationCode = code?.trim();
+
+  if (!normalizedEmail || !verificationCode) {
+    throw createAuthError("Email and verification code are required.");
   }
 
   await connectDB();
 
   const user = await User.findOne({
-    emailVerificationToken: hashToken(token),
+    email: normalizedEmail,
+    emailVerificationToken: verificationCode,
     emailVerificationTokenExpiresAt: { $gt: new Date() },
     deletedAt: null,
-  }).select("+emailVerificationToken +emailVerificationTokenExpiresAt");
+  }).select("+emailVerificationToken +emailVerificationTokenExpiresAt +password");
 
   if (!user) {
-    throw createAuthError("Invalid or expired verification token.", 400);
+    throw createAuthError("Invalid email or verification code.", 400);
   }
 
   user.isVerified = true;
   user.emailVerificationToken = "";
   user.emailVerificationTokenExpiresAt = null;
   await user.save();
+
+  await sendWelcomeEmail(user);
 
   return {
     user: sanitizeUser(user),

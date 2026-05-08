@@ -26,12 +26,12 @@ export default function CartItem({ item, onRemove, onUpdateQuantity }) {
 
       <div className="space-y-2">
         <Link href={`/products/${product.id}`}>
-          <h2 className="font-semibold text-slate-950 hover:text-emerald-700">
+          <h2 className="font-semibold text-slate-100 hover:text-violet-200 text-center text-xl">
             {product.name}
           </h2>
         </Link>
-        <p className="text-sm text-slate-600">${product.price.toFixed(2)}</p>
-        <p className="text-xs text-slate-500">{product.stock} in stock</p>
+        <p className="text-sm text-slate-400">${product.price.toFixed(2)}</p>
+        <p className="text-xs text-slate-300">{product.stock} in stock</p>
       </div>
 
       <div className="flex items-center gap-3 sm:flex-col sm:items-end">
@@ -46,7 +46,7 @@ export default function CartItem({ item, onRemove, onUpdateQuantity }) {
           className="w-24"
           aria-label={`Quantity for ${product.name}`}
         />
-        <p className="min-w-20 text-right font-semibold text-slate-950">
+        <p className="min-w-20 text-right font-semibold text-slate-100">
           ${(product.price * quantity).toFixed(2)}
         </p>
         <Button

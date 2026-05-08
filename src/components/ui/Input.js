@@ -3,9 +3,9 @@ export default function Input({ className = "", type = "text", ...props }) {
     <input
       type={type}
       className={[
-        "h-11 w-full rounded-xl border border-slate-300 bg-white px-4 text-sm text-slate-950 shadow-sm transition-colors",
-        "placeholder:text-slate-400 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20",
-        "disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500",
+        "h-11 w-full rounded-xl border border-white/10 bg-[#0b0f14] px-4 text-sm text-slate-100 shadow-sm transition-colors",
+        "placeholder:text-slate-500 focus:border-[#480556] focus:outline-none focus:ring-4 focus:ring-[#480556]/20",
+        "disabled:cursor-not-allowed disabled:bg-black/20 disabled:text-slate-500",
         className,
       ]
         .filter(Boolean)

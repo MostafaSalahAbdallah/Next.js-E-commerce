@@ -1,16 +1,16 @@
 import Link from "next/link";
 
-export default function NotFound() {
+export default function notfound() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-6 py-12">
+    <div className="min-h-screen bg-[#0b0f14] flex flex-col items-center justify-center px-6 py-12">
       <div className="max-w-md w-full text-center">
         <div className="mb-8">
           <h1 className="text-9xl font-extrabold text-[#744577] opacity-20">404</h1>
           <div className="-mt-16">
-            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
+            <h2 className="text-3xl font-bold text-gray-300 tracking-tight">
               Lost in the shop?
             </h2>
-            <p className="mt-4 text-base text-gray-600">
+            <p className="mt-4 text-base text-gray-100">
               We couldn't find the page you’re looking for. It might have been moved, 
               or the product is currently out of stock,<strong>or you may not be registered.</strong>
             </p>
@@ -27,7 +27,7 @@ export default function NotFound() {
           </Link>
           <Link
             href="/shop"
-            className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3 border border-gray-800 text-base font-medium rounded-md text-black bg-white hover:bg-gray-50 transition-colors"
           >
             Continue Shopping
           </Link>

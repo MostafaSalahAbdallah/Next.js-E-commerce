@@ -1,21 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import Button from "@/components/ui/Button";
+import { MdOutlineFavoriteBorder, MdFavorite } from "react-icons/md";
+import { BsInfoCircleFill } from "react-icons/bs"; 
+import Link from "next/link";
 
-export default function FavoriteButton({
+export default function ProductActions({
   productId,
   initialFavorited = false,
-  size = "sm",
+  onToggle,
 }) {
   const [isFavorited, setIsFavorited] = useState(initialFavorited);
-  const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   async function toggleFavorite() {
-    setMessage("");
     setIsLoading(true);
-
     try {
       const response = await fetch(
         isFavorited ? `/api/favorites?productId=${productId}` : "/api/favorites",
@@ -25,37 +24,47 @@ export default function FavoriteButton({
           body: isFavorited ? undefined : JSON.stringify({ productId }),
         }
       );
-      const data = await response.json();
 
-      if (response.status === 401) {
-        throw new Error("Login to save favorites.");
+      if (response.ok) {
+        const nextFavorited = !isFavorited;
+        setIsFavorited(nextFavorited);
+        onToggle?.(nextFavorited);
       }
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to update favorites.");
-      }
-
-      setIsFavorited((current) => !current);
-      setMessage(isFavorited ? "Removed from favorites." : "Saved to favorites.");
     } catch (error) {
-      setMessage(error.message);
+      console.error("Favorite Error:", error);
     } finally {
       setIsLoading(false);
     }
   }
 
   return (
-    <div className="space-y-2">
-      <Button
+    <div className="flex items-center gap-2">
+      <button
         type="button"
-        size={size}
-        variant={isFavorited ? "secondary" : "ghost"}
         onClick={toggleFavorite}
         disabled={isLoading}
+        aria-label="Favorite"
+        className={`
+          flex items-center justify-center p-2 rounded-full transition-all active:scale-90
+          ${isFavorited 
+            ? "bg-[#744577]/10 text-[#744577]" 
+            : "bg-gray-100 text-gray-400 hover:text-[#744577] hover:bg-gray-200"}
+        `}
       >
-        {isLoading ? "Saving..." : isFavorited ? "Favorited" : "Favorite"}
-      </Button>
-      {message ? <p className="text-xs text-slate-600">{message}</p> : null}
+        {isFavorited ? (
+          <MdFavorite className="w-5 h-5" />
+        ) : (
+          <MdOutlineFavoriteBorder className="w-5 h-5" />
+        )}
+      </button>
+
+      <Link
+        href={`/products/${productId}`}
+        aria-label="View Details"
+        className="flex items-center justify-center p-2 rounded-full bg-gray-600 text-gray-400 hover:bg-[#744577]/10 hover:text-[#744577] transition-all active:scale-90"
+      >
+        <BsInfoCircleFill className="w-5 h-5" />
+      </Link>
     </div>
   );
 }

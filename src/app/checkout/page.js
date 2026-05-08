@@ -20,6 +20,7 @@ export default function CheckoutPage() {
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [cardSetupError, setCardSetupError] = useState("");
 
   async function placeCashOrder() {
     setError("");
@@ -69,22 +70,6 @@ export default function CheckoutPage() {
         }
 
         setItems(data.cart.items);
-
-        if (data.cart.items.length > 0 && stripePublishableKey) {
-          const paymentResponse = await fetch("/api/payments/create-intent", {
-            method: "POST",
-            signal: controller.signal,
-          });
-          const paymentData = await paymentResponse.json();
-
-          if (!paymentResponse.ok) {
-            throw new Error(
-              paymentData.message || "Failed to prepare card payment."
-            );
-          }
-
-          setClientSecret(paymentData.clientSecret);
-        }
       } catch (error) {
         if (error.name !== "AbortError") {
           setError(error.message);
@@ -103,6 +88,53 @@ export default function CheckoutPage() {
       controller.abort();
     };
   }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function prepareCardPayment() {
+      if (paymentMethod !== "stripe") return;
+      if (!stripePublishableKey) {
+        setClientSecret("");
+        setCardSetupError("Card payment is not configured. Use Cash on Delivery.");
+        return;
+      }
+      if (items.length === 0) return;
+      if (clientSecret) return;
+
+      setCardSetupError("");
+
+      try {
+        const paymentResponse = await fetch("/api/payments/create-intent", {
+          method: "POST",
+          signal: controller.signal,
+        });
+        const paymentData = await paymentResponse.json();
+
+        if (!paymentResponse.ok) {
+          setClientSecret("");
+          setCardSetupError(
+            paymentData.message || "Failed to prepare card payment."
+          );
+          return;
+        }
+
+        setClientSecret(paymentData.clientSecret || "");
+        if (!paymentData.clientSecret) {
+          setCardSetupError("Card payment is not available right now.");
+        }
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          setClientSecret("");
+          setCardSetupError(error.message || "Failed to prepare card payment.");
+        }
+      }
+    }
+
+    prepareCardPayment();
+
+    return () => controller.abort();
+  }, [paymentMethod, items, clientSecret]);
 
   return (
     <section className="space-y-8">
@@ -161,7 +193,7 @@ export default function CheckoutPage() {
           <OrderSummary items={items} />
 
           <Card className="h-fit space-y-4">
-          <h2 className="text-lg font-semibold text-slate-950">Payment</h2>
+            <h2 className="text-lg font-semibold text-slate-950">Payment</h2>
 
             <div className="grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
               <button
@@ -191,15 +223,63 @@ export default function CheckoutPage() {
             </div>
 
             {paymentMethod === "stripe" ? (
-              stripePromise && clientSecret ? (
-                <Elements stripe={stripePromise} options={{ clientSecret }}>
-                  <StripePaymentForm onSuccess={handlePaidOrderSuccess} />
-                </Elements>
-              ) : (
-                <p className="rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-800">
-                  Card payment is not configured. Use Cash on Delivery.
-                </p>
-              )
+              <div className="space-y-4">
+                {stripePromise && clientSecret ? (
+                  <Elements stripe={stripePromise} options={{ clientSecret }}>
+                    <StripePaymentForm onSuccess={handlePaidOrderSuccess} />
+                  </Elements>
+                ) : (
+                  <div className="space-y-3">
+                    {cardSetupError ? (
+                      <p className="rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                        {cardSetupError}
+                      </p>
+                    ) : (
+                      <p className="rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-700">
+                        Loading card payment...
+                      </p>
+                    )}
+
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-sm font-semibold text-slate-950">
+                          Card number
+                        </label>
+                        <input
+                          disabled
+                          placeholder="1234 1234 1234 1234"
+                          className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-sm font-semibold text-slate-950">
+                            Expiry
+                          </label>
+                          <input
+                            disabled
+                            placeholder="MM/YY"
+                            className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-sm font-semibold text-slate-950">
+                            CVC
+                          </label>
+                          <input
+                            disabled
+                            placeholder="123"
+                            className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500"
+                          />
+                        </div>
+                      </div>
+                      <Button type="button" className="w-full" disabled>
+                        Pay with Card
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
             ) : (
               <div className="space-y-4">
                 <p className="text-sm leading-6 text-slate-600">

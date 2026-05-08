@@ -53,12 +53,13 @@ export default function AddToCartButton({ product, className = "", size = "md" }
       <Button
         type="button"
         size={size}
+        className="w-full"
         onClick={handleAddToCart}
         disabled={isLoading || product.stock < 1}
       >
         {isLoading ? "Adding..." : "Add to Cart"}
       </Button>
-      {message ? <p className="text-xs text-slate-600">{message}</p> : null}
+      {message ? <p className="text-xs text-green-200">{message}</p> : null}
     </div>
   );
 }

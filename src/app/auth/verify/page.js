@@ -1,16 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 
-export default function LoginPage() {
-  const router = useRouter();
-  const [formData, setFormData] = useState({ email: "", password: "" });
+export default function VerifyEmailPage() {
+  const [formData, setFormData] = useState({ email: "", code: "" });
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   function handleChange(event) {
@@ -21,28 +20,23 @@ export default function LoginPage() {
   async function handleSubmit(event) {
     event.preventDefault();
     setError("");
+    setMessage("");
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch("/api/auth/verify-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Login failed.");
+        throw new Error(data.message || "Verification failed.");
       }
 
-      const destination =
-        data.user?.role === "admin"
-          ? "/admin"
-          : data.user?.role === "seller"
-            ? "/seller"
-            : "/";
-      router.push(destination);
-      router.refresh();
+      setMessage(data.message || "Email verified successfully.");
     } catch (error) {
       setError(error.message);
     } finally {
@@ -55,23 +49,38 @@ export default function LoginPage() {
       <Card className="space-y-6 p-6 sm:p-8">
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-bold tracking-tight text-slate-100">
-            Welcome back
+            Verify your email
           </h1>
-          <p className="text-sm text-slate-400">
-            Login to continue shopping.
+          <p className="text-sm text-slate-300">
+            Enter the 4-digit code sent to your Gmail to activate your account.
           </p>
         </div>
 
         {error ? (
-          <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+          <p className="rounded-xl bg-red-950 px-4 py-3 text-sm text-red-300">
             {error}
           </p>
+        ) : null}
+
+        {message ? (
+          <div className="space-y-3 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-violet-700">
+            <p>{message}</p>
+            <p className="text-xs text-violet-600">
+              Your email is now verified. You can login below.
+            </p>
+            <Link
+              href="/auth/login"
+              className="inline-flex rounded-full bg-[#744577]/10 px-4 py-2 text-sm font-semibold text-[#744577] transition hover:bg-[#744577]/20"
+            >
+              Go to login
+            </Link>
+          </div>
         ) : null}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-medium text-slate-300">
-              Email
+              Registered email
             </label>
             <Input
               id="email"
@@ -86,37 +95,29 @@ export default function LoginPage() {
           </div>
 
           <div className="space-y-2">
-            <label
-              htmlFor="password"
-              className="text-sm font-medium text-slate-300"
-            >
-              Password
+            <label htmlFor="code" className="text-sm font-medium text-slate-300">
+              Verification code
             </label>
             <Input
-              id="password"
-              name="password"
-              type="password"
-              value={formData.password}
+              id="code"
+              name="code"
+              type="text"
+              value={formData.code}
               onChange={handleChange}
-              placeholder="Enter your password"
-              autoComplete="current-password"
+              placeholder="1234"
+              maxLength={4}
+              pattern="\d{4}"
               required
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Logging in..." : "Login"}
+          <Button type="submit" className="w-full" disabled={isLoading || Boolean(message)}>
+            {isLoading ? "Verifying..." : "Verify email"}
           </Button>
         </form>
 
-        <p className="text-center text-sm text-slate-400">
-          Don&apos;t have an account?{" "}
-          <Link
-            href="/auth/register"
-            className="font-semibold text-violet-700 hover:text-violet-800"
-          >
-            Register
-          </Link>
+        <p className="text-center text-sm text-slate-600">
+          Didn’t receive the code? Check your spam folder or try registering again.
         </p>
       </Card>
     </section>

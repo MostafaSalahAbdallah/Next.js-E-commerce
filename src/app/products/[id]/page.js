@@ -1,3 +1,6 @@
+import { IoIosArrowBack } from "react-icons/io"; 
+import { BiArrowBack } from "react-icons/bi"; 
+import { TiArrowBack } from "react-icons/ti";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import AddToCartButton from "@/components/cart/AddToCartButton";
@@ -6,6 +9,7 @@ import ReviewSection from "@/components/review/ReviewSection";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { getProductById } from "@/services/product.service";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +29,7 @@ export default async function ProductDetailsPage({ params }) {
 
   return (
     <section className="grid gap-8 lg:grid-cols-2">
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-md shadow-slate-200/60">
+      <div className="overflow-hidden rounded-xl border border-slate-900 bg-slate-900 shadow-md shadow-slate-900/60">
         <Image
           src={product.image}
           alt={product.name}
@@ -38,30 +42,32 @@ export default async function ProductDetailsPage({ params }) {
 
       <Card className="flex flex-col justify-center gap-6 p-6 sm:p-8">
         <div className="space-y-3">
-          <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+          <p className="text-lg font-semibold uppercase tracking-wide text-violet-100">
             Product details
           </p>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">
             {product.name}
           </h1>
-          <p className="text-2xl font-bold text-slate-950">
+          <p className="text-2xl font-bold text-yellow-300">
             ${product.price.toFixed(2)}
           </p>
         </div>
 
-        <p className="leading-7 text-slate-600">{product.description}</p>
+        <p className="leading-7 text-slate-200">{product.description}</p>
 
-        <div className="rounded-xl bg-slate-50 p-4 text-sm text-slate-700">
-          <span className="font-semibold text-slate-950">{product.stock}</span>{" "}
+        <div className="rounded-2xl bg-slate-900 p-4 text-sm text-slate-200">
+          <span className="font-semibold text-green-200">{product.stock}</span>{" "}
           items available
         </div>
 
         <div className="flex flex-wrap gap-3">
           <AddToCartButton product={product} />
           <FavoriteButton productId={product.id} size="md" />
-          <Button href="/products" variant="secondary">
-            Back to Products
-          </Button>
+          <Link href="/products">
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-gray-400 hover:text-[#744577] hover:bg-[#744577]/10 transition-all active:scale-90 shadow-sm">
+              <IoIosArrowBack className="text-2xl" />
+            </div>
+          </Link>
         </div>
       </Card>
 

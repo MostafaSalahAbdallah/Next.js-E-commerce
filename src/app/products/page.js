@@ -66,33 +66,27 @@ export default function ProductsPage() {
   }
 
   useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
     const controller = new AbortController();
 
-    async function loadProducts() {
+    async function loadCategories() {
       try {
-        const [productsResponse, categoriesResponse] = await Promise.all([
-          fetch("/api/products", { signal: controller.signal }),
-          fetch("/api/categories", { signal: controller.signal }),
-        ]);
-        const [data, categoriesData] = await Promise.all([
-          productsResponse.json(),
-          categoriesResponse.json(),
-        ]);
-
-        if (!productsResponse.ok) {
-          throw new Error(data.message || "Failed to load products.");
-        }
+        const categoriesResponse = await fetch("/api/categories", {
+          signal: controller.signal,
+        });
+        const categoriesData = await categoriesResponse.json();
 
         if (!categoriesResponse.ok) {
           throw new Error(categoriesData.message || "Failed to load categories.");
         }
 
-        setProducts(data.products);
         setCategories(categoriesData.categories);
       } catch (error) {
         if (error.name !== "AbortError") {
           setError(error.message);
-          setProducts([]);
         }
       } finally {
         if (!controller.signal.aborted) {
@@ -101,7 +95,7 @@ export default function ProductsPage() {
       }
     }
 
-    loadProducts();
+    loadCategories();
 
     return () => {
       controller.abort();
@@ -111,10 +105,10 @@ export default function ProductsPage() {
   return (
     <section className="space-y-8">
       <div className="space-y-3">
-        <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+        <p className="text-sm font-semibold uppercase tracking-wide text-violet-700">
           Products
         </p>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+        <h1 className="text-3xl font-bold tracking-tight text-violet-100 sm:text-4xl">
           Browse our products
         </h1>
         <p className="max-w-2xl text-slate-600">
@@ -124,7 +118,7 @@ export default function ProductsPage() {
 
       <form
         onSubmit={handleSubmit}
-        className="grid gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-md shadow-slate-200/60 md:grid-cols-[1fr_170px_140px_140px_auto_auto]"
+        className="grid gap-3 rounded-xl border border-slate-900 bg-[#0b0f14] p-4 md:grid-cols-[1fr_170px_140px_140px_auto_auto]"
       >
         <Input
           name="search"
@@ -152,7 +146,7 @@ export default function ProductsPage() {
           name="category"
           value={filters.category}
           onChange={handleChange}
-          className="h-11 w-full rounded-xl border border-slate-300 bg-white px-4 text-sm text-slate-950 shadow-sm focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20"
+          className="h-11 w-full rounded-xl border border-slate-800 bg-[0b0f14] px-4 text-sm text-slate-500 shadow-sm focus:border-[#480556] focus:outline-none focus:ring-2 focus:ring-[#480556]"
         >
           <option value="">All categories</option>
           {categories.map((category) => (
@@ -176,13 +170,13 @@ export default function ProductsPage() {
       ) : null}
 
       {isLoading ? (
-        <p className="rounded-xl bg-white p-6 text-center text-sm text-slate-600 shadow-md shadow-slate-200/60">
+        <p className="rounded-xl bg-violet-900 p-6 text-center text-sm text-slate-600 shadow-md shadow-violet-200/60">
           Loading products...
         </p>
       ) : null}
 
       {!isLoading && products.length === 0 && !error ? (
-        <p className="rounded-xl bg-white p-6 text-center text-sm text-slate-600 shadow-md shadow-slate-200/60">
+        <p className="rounded-xl bg-[#0b0f14] p-6 text-center text-sm text-slate-300 shadow-md shadow-violet-200/60">
           No products found.
         </p>
       ) : null}

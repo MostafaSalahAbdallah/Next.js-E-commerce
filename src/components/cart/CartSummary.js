@@ -11,9 +11,9 @@ export default function CartSummary({ items }) {
 
   return (
     <Card className="space-y-4">
-      <h2 className="text-lg font-semibold text-slate-950">Cart Summary</h2>
+      <h2 className="text-lg font-semibold text-slate-100">Cart Summary</h2>
 
-      <div className="space-y-3 text-sm text-slate-600">
+      <div className="space-y-3 text-sm text-slate-300">
         <div className="flex items-center justify-between">
           <span>Items</span>
           <span>{totalItems}</span>

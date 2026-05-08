@@ -121,13 +121,13 @@ export default function CartPage() {
     <section className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="space-y-3">
-          <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+          <p className="text-sm font-semibold uppercase tracking-wide text-violet-700">
             Cart
           </p>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">
             Shopping cart
           </h1>
-          <p className="text-slate-600">
+          <p className="text-slate-400">
             {cartType === "guest"
               ? "Your guest cart is saved in this browser."
               : "Your cart is saved to your account."}
@@ -145,17 +145,17 @@ export default function CartPage() {
       ) : null}
 
       {isLoading ? (
-        <p className="rounded-xl bg-white p-6 text-center text-sm text-slate-600 shadow-md shadow-slate-200/60">
+        <p className="rounded-xl bg-[#0b0f14] p-6 text-center text-sm text-slate-600 shadow-violet-950 shadow-xs">
           Loading cart...
         </p>
       ) : null}
 
       {!isLoading && items.length === 0 ? (
-        <div className="rounded-xl bg-white p-8 text-center shadow-md shadow-slate-200/60">
-          <h2 className="text-lg font-semibold text-slate-950">
+        <div className="rounded-xl bg-[#0f1620] p-8 text-center shadow-slate-900 shadow-xs">
+          <h2 className="text-lg font-semibold text-slate-100">
             Your cart is empty
           </h2>
-          <p className="mt-2 text-sm text-slate-600">
+          <p className="mt-2 text-sm text-slate-400">
             Add products to your cart and they will appear here.
           </p>
         </div>

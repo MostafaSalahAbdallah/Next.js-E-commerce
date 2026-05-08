@@ -56,14 +56,14 @@ export default function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0b0f14]/80 shadow-sm backdrop-blur">
       <Container>
         <nav className="flex h-16 items-center justify-between gap-4">
           <Link
             href="/"
-            className="text-xl font-bold tracking-tight text-slate-950"
+            className="text-2xl font-bold tracking-tight text-[#f0e9b6]"
           >
-            Ecommerce
+            AX<span className="hover:text-violet-700 transition-color">O</span>
           </Link>
 
           <div className="hidden items-center gap-2 md:flex">
@@ -71,7 +71,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950"
+                className="rounded-xl px-3 py-2 text-sm font-medium text-slate-200 transition-colors hover:bg-white/10 hover:text-[#f0e9b6]"
               >
                 {link.label}
               </Link>
@@ -79,7 +79,7 @@ export default function Navbar() {
             {user?.role === "admin" ? (
               <Link
                 href="/admin"
-                className="rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950"
+                className="rounded-xl px-3 py-2 text-sm font-medium text-slate-200 transition-colors hover:bg-white/10 hover:text-[#f0e9b6]"
               >
                 Admin
               </Link>
@@ -87,7 +87,7 @@ export default function Navbar() {
             {user?.role === "seller" ? (
               <Link
                 href="/seller"
-                className="rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950"
+                className="rounded-xl px-3 py-2 text-sm font-medium text-slate-200 transition-colors hover:bg-white/10 hover:text-[#f0e9b6]"
               >
                 Seller
               </Link>
@@ -99,7 +99,7 @@ export default function Navbar() {
               Logout
             </Button>
           ) : (
-            <Button href="/auth/login" size="sm">
+            <Button href="/auth/login" size="sm" className="bg-violet-950">
               Login
             </Button>
           )}

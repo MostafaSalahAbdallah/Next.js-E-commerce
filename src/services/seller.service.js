@@ -183,8 +183,8 @@ export async function getSellerCategories(sellerId) {
   await connectDB();
 
   const categories = await Category.find({
-    createdBy: sellerId,
     deletedAt: null,
+    $or: [{ createdBy: sellerId }, { createdBy: null }],
   }).sort({ createdAt: -1 });
 
   return categories.map(serializeCategory);

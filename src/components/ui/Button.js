@@ -2,11 +2,11 @@ import Link from "next/link";
 
 const variants = {
   primary:
-    "bg-emerald-600 text-white shadow-sm hover:bg-emerald-700 focus-visible:outline-emerald-600",
+    "bg-[#744577] text-white shadow-sm hover:bg-[#5d375f] focus-visible:outline-[#744577]",
   secondary:
-    "border border-slate-300 bg-white text-slate-900 hover:bg-slate-100 focus-visible:outline-slate-500",
+    "border border-white/10 bg-white/5 text-slate-100 hover:bg-white/10 focus-visible:outline-[#accfa3]",
   ghost:
-    "text-slate-700 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-slate-500",
+    "text-slate-200 hover:bg-white/10 hover:text-white focus-visible:outline-[#accfa3]",
 };
 
 const sizes = {

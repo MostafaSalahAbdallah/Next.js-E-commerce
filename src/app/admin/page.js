@@ -262,13 +262,13 @@ export default function AdminDashboardPage() {
   return (
     <section className="space-y-8">
       <div className="space-y-3">
-        <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+        <p className="text-sm font-semibold uppercase tracking-wide text-violet-700">
           Admin
         </p>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">
           Dashboard
         </h1>
-        <p className="max-w-2xl text-slate-600">
+        <p className="max-w-2xl text-slate-300">
           Manage users, products, and categories from one protected panel.
         </p>
       </div>
@@ -280,13 +280,13 @@ export default function AdminDashboardPage() {
       ) : null}
 
       {message ? (
-        <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+        <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-violet-700">
           {message}
         </p>
       ) : null}
 
       {isLoading ? (
-        <p className="rounded-xl bg-white p-6 text-center text-sm text-slate-600 shadow-md shadow-slate-200/60">
+        <p className="rounded-xl bg-white p-6 text-center text-sm text-slate-400 shadow-md shadow-slate-200/60">
           Loading admin dashboard...
         </p>
       ) : null}
@@ -295,31 +295,31 @@ export default function AdminDashboardPage() {
         <>
           <div className="grid gap-5 md:grid-cols-3">
             <Card>
-              <p className="text-sm text-slate-500">Users</p>
-              <p className="mt-2 text-3xl font-bold text-slate-950">
+              <p className="text-sm text-slate-200">Users</p>
+              <p className="mt-2 text-3xl font-bold text-slate-100">
                 {users.length}
               </p>
             </Card>
             <Card>
-              <p className="text-sm text-slate-500">Products</p>
-              <p className="mt-2 text-3xl font-bold text-slate-950">
+              <p className="text-sm text-slate-200">Products</p>
+              <p className="mt-2 text-3xl font-bold text-slate-100">
                 {products.length}
               </p>
             </Card>
             <Card>
-              <p className="text-sm text-slate-500">Categories</p>
-              <p className="mt-2 text-3xl font-bold text-slate-950">
+              <p className="text-sm text-slate-200">Categories</p>
+              <p className="mt-2 text-3xl font-bold text-slate-100">
                 {categories.length}
               </p>
             </Card>
           </div>
 
           <Card className="space-y-5 overflow-x-auto">
-            <h2 className="text-xl font-semibold text-slate-950">
+            <h2 className="text-xl font-semibold text-slate-100">
               Manage Users
             </h2>
             <table className="w-full min-w-[720px] text-left text-sm">
-              <thead className="border-b border-slate-200 text-slate-500">
+              <thead className="border-b border-slate-100 text-slate-200">
                 <tr>
                   <th className="py-3 pr-4 font-semibold">Email</th>
                   <th className="py-3 pr-4 font-semibold">Role</th>
@@ -330,20 +330,20 @@ export default function AdminDashboardPage() {
               <tbody className="divide-y divide-slate-100">
                 {users.map((user) => (
                   <tr key={user.id}>
-                    <td className="py-3 pr-4 text-slate-950">{user.email}</td>
+                    <td className="py-3 pr-4 text-violet-300">{user.email}</td>
                     <td className="py-3 pr-4">
                       <select
                         value={user.role}
                         onChange={(event) =>
                           updateUser(user.id, { role: event.target.value })
                         }
-                        className="rounded-xl border border-slate-300 bg-white px-3 py-2"
+                        className="rounded-xl border border-slate-300 bg-slate-900 px-3 py-2"
                       >
                         <option value="user">User</option>
                         <option value="admin">Admin</option>
                       </select>
                     </td>
-                    <td className="py-3 pr-4 text-slate-600">
+                    <td className="py-3 pr-4 text-slate-300">
                       {user.deletedAt
                         ? "Deleted"
                         : user.isBlocked
@@ -378,7 +378,7 @@ export default function AdminDashboardPage() {
 
           <div className="grid gap-6 xl:grid-cols-[420px_1fr]">
             <Card className="space-y-5">
-              <h2 className="text-xl font-semibold text-slate-950">
+              <h2 className="text-xl font-semibold text-slate-100">
                 {editingCategoryId ? "Edit Category" : "Add Category"}
               </h2>
               <form onSubmit={submitCategory} className="space-y-4">
@@ -394,7 +394,7 @@ export default function AdminDashboardPage() {
                   value={categoryForm.description}
                   onChange={handleCategoryChange}
                   placeholder="Description"
-                  className="min-h-24 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-950 shadow-sm focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20"
+                  className="min-h-24 w-full rounded-xl border border-slate-300 bg-slate-900 px-4 py-3 text-sm text-slate-100 shadow-sm focus:border-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-600]"
                 />
                 <div className="flex gap-2">
                   <Button type="submit">
@@ -414,11 +414,11 @@ export default function AdminDashboardPage() {
             </Card>
 
             <Card className="space-y-5 overflow-x-auto">
-              <h2 className="text-xl font-semibold text-slate-950">
+              <h2 className="text-xl font-semibold text-slate-100">
                 Manage Categories
               </h2>
               <table className="w-full min-w-[560px] text-left text-sm">
-                <thead className="border-b border-slate-200 text-slate-500">
+                <thead className="border-b border-slate-200 text-slate-100">
                   <tr>
                     <th className="py-3 pr-4 font-semibold">Name</th>
                     <th className="py-3 pr-4 font-semibold">Description</th>
@@ -428,10 +428,10 @@ export default function AdminDashboardPage() {
                 <tbody className="divide-y divide-slate-100">
                   {categories.map((category) => (
                     <tr key={category.id}>
-                      <td className="py-3 pr-4 font-medium text-slate-950">
+                      <td className="py-3 pr-4 font-medium text-slate-100">
                         {category.name}
                       </td>
-                      <td className="py-3 pr-4 text-slate-600">
+                      <td className="py-3 pr-4 text-slate-200">
                         {category.description || "-"}
                       </td>
                       <td className="flex gap-2 py-3 pr-4">
@@ -463,7 +463,7 @@ export default function AdminDashboardPage() {
 
           <div className="grid gap-6 xl:grid-cols-[420px_1fr]">
             <Card className="space-y-5">
-              <h2 className="text-xl font-semibold text-slate-950">
+              <h2 className="text-xl font-semibold text-slate-100">
                 {editingProductId ? "Edit Product" : "Add Product"}
               </h2>
               <form onSubmit={submitProduct} className="space-y-4">
@@ -506,7 +506,7 @@ export default function AdminDashboardPage() {
                   name="category"
                   value={productForm.category}
                   onChange={handleProductChange}
-                  className="h-11 w-full rounded-xl border border-slate-300 bg-white px-4 text-sm text-slate-950 shadow-sm focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20"
+                  className="h-11 w-full rounded-xl border border-slate-300 bg-slate-900 px-4 text-sm text-slate-100 shadow-sm focus:border-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-600/20"
                 >
                   <option value="">No category</option>
                   {categories.map((category) => (
@@ -520,7 +520,7 @@ export default function AdminDashboardPage() {
                   value={productForm.description}
                   onChange={handleProductChange}
                   placeholder="Description"
-                  className="min-h-28 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-950 shadow-sm focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20"
+                  className="min-h-28 w-full rounded-xl border border-slate-300 bg-slate-900 px-4 py-3 text-sm text-slate-100 shadow-sm focus:border-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-600/20"
                   required
                 />
                 <div className="flex gap-2">
@@ -541,11 +541,11 @@ export default function AdminDashboardPage() {
             </Card>
 
             <Card className="space-y-5 overflow-x-auto">
-              <h2 className="text-xl font-semibold text-slate-950">
+              <h2 className="text-xl font-semibold text-slate-100">
                 Manage Products
               </h2>
               <table className="w-full min-w-[760px] text-left text-sm">
-                <thead className="border-b border-slate-200 text-slate-500">
+                <thead className="border-b border-slate-200 text-slate-200">
                   <tr>
                     <th className="py-3 pr-4 font-semibold">Name</th>
                     <th className="py-3 pr-4 font-semibold">Category</th>
@@ -557,16 +557,16 @@ export default function AdminDashboardPage() {
                 <tbody className="divide-y divide-slate-100">
                   {products.map((product) => (
                     <tr key={product.id}>
-                      <td className="py-3 pr-4 font-medium text-slate-950">
+                      <td className="py-3 pr-4 font-medium text-slate-100">
                         {product.name}
                       </td>
-                      <td className="py-3 pr-4 text-slate-600">
+                      <td className="py-3 pr-4 text-slate-200">
                         {product.category?.name || "-"}
                       </td>
-                      <td className="py-3 pr-4 text-slate-600">
+                      <td className="py-3 pr-4 text-slate-200">
                         ${Number(product.price).toFixed(2)}
                       </td>
-                      <td className="py-3 pr-4 text-slate-600">
+                      <td className="py-3 pr-4 text-slate-200">
                         {product.stock}
                       </td>
                       <td className="flex gap-2 py-3 pr-4">

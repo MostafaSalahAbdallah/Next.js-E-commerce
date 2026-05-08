@@ -1,51 +1,30 @@
-import nodemailer from "nodemailer";
+import { sendEmail } from "@/lib/email";
 
 function getBaseUrl() {
   return process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 }
 
-function getTransporter() {
-  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    return null;
-  }
-
-  return nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT || 587),
-    secure: process.env.SMTP_SECURE === "true",
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
-}
-
-export async function sendEmail({ to, subject, text, html }) {
-  const transporter = getTransporter();
-
-  if (!transporter || !to) {
-    return { skipped: true };
-  }
-
-  await transporter.sendMail({
-    from: process.env.SMTP_FROM || process.env.SMTP_USER,
-    to,
-    subject,
-    text,
-    html,
-  });
-
-  return { skipped: false };
-}
-
-export async function sendVerificationEmail(user, token) {
-  const verificationUrl = `${getBaseUrl()}/auth/verify-email?token=${token}`;
-
+export async function sendVerificationCodeEmail(user, code) {
   return sendEmail({
     to: user.email,
-    subject: "Verify your email",
-    text: `Verify your email by opening this link: ${verificationUrl}`,
-    html: `<p>Verify your email by opening this link:</p><p><a href="${verificationUrl}">${verificationUrl}</a></p>`,
+    subject: "Your AXO verification code",
+    text: `Hello! Your AXO verification code is ${code}. Enter it on the verification page to activate your account.`,
+    html: `<p>Hello <strong>${user.email}</strong>,</p>
+           <p>Your 4-digit verification code is:</p>
+           <p style="font-size: 1.5rem; letter-spacing: 0.22em; font-weight: 700; color: #744577;">${code}</p>
+           <p>Enter this code on the verification screen to activate your account.</p>
+           <p>If you did not request this, please ignore this email.</p>`,
+  });
+}
+
+export async function sendWelcomeEmail(user) {
+  return sendEmail({
+    to: user.email,
+    subject: "Welcome to AXO E-Commerce Store!",
+    text: `Welcome ${user.email}! Your account has been created successfully. You can now login and start shopping.`,
+    html: `<p>Welcome <strong>${user.email}</strong>!</p>
+           <p>Your account has been created successfully. You can now login and start shopping.</p>
+           <p>Thank you for joining AXO!</p>`,
   });
 }
 
