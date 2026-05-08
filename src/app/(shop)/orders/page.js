@@ -92,7 +92,7 @@ export default function OrdersPage() {
       ) : null}
 
       {isLoading ? (
-        <p className="rounded-xl bg-white p-6 text-center text-sm text-slate-600 shadow-md shadow-slate-200/60">
+        <p className="rounded-xl bg-white p-6 text-center text-sm text-slate-300 shadow-md shadow-slate-200/60">
           Loading orders...
         </p>
       ) : null}
@@ -100,7 +100,7 @@ export default function OrdersPage() {
       {!isLoading && !error && orders.length === 0 ? (
         <Card className="space-y-4 text-center">
           <h2 className="text-lg font-semibold text-slate-100">No orders yet</h2>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-300">
             Checkout your cart to create an order.
           </p>
           <div className="flex justify-center gap-3">
@@ -123,10 +123,10 @@ export default function OrdersPage() {
               <Card key={order.id} className="space-y-5">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="space-y-1">
-                    <p className="text-sm font-semibold text-slate-950">
+                    <p className="text-sm font-semibold text-slate-100">
                       Order #{order.id}
                     </p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-slate-300">
                       {formatDate(order.createdAt)}
                     </p>
                   </div>
@@ -140,7 +140,7 @@ export default function OrdersPage() {
                     >
                       {order.status}
                     </span>
-                    <p className="text-sm font-bold text-slate-950">
+                    <p className="text-sm font-bold text-slate-100">
                       ${Number(order.total).toFixed(2)}
                     </p>
                   </div>
@@ -163,7 +163,7 @@ export default function OrdersPage() {
                         />
                       </div>
                       <div className="space-y-1">
-                        <p className="text-sm font-semibold text-slate-950">
+                        <p className="text-sm font-semibold text-slate-100">
                           {item.name}
                         </p>
                         <p className="text-xs text-slate-500">
@@ -172,13 +172,13 @@ export default function OrdersPage() {
                         <div className="pt-1">
                           <Link
                             href={`/products/${item.product}`}
-                            className="text-xs font-semibold text-emerald-700 hover:text-emerald-800"
+                            className="text-xs font-semibold text-violet-700 hover:text-violet-800"
                           >
                             View product
                           </Link>
                         </div>
                       </div>
-                      <p className="text-sm font-semibold text-slate-950">
+                      <p className="text-sm font-semibold text-yellow-200">
                         ${Number(item.subtotal).toFixed(2)}
                       </p>
                     </div>
@@ -188,7 +188,7 @@ export default function OrdersPage() {
                 <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4 text-sm">
                   <div className="text-slate-600">
                     Payment:{" "}
-                    <span className="font-semibold text-slate-950">
+                    <span className="font-semibold text-slate-100">
                       {order.paymentMethod === "cash_on_delivery"
                         ? "Cash on Delivery"
                         : "Card"}

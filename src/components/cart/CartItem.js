@@ -9,7 +9,7 @@ export default function CartItem({ item, onRemove, onUpdateQuantity }) {
   const { product, quantity } = item;
 
   return (
-    <div className="grid gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-md shadow-slate-200/60 sm:grid-cols-[120px_1fr_auto]">
+    <div className="grid gap-4 rounded-xl border border-slate-800 bg-[#100a15] p-4 shadow-md shadow-slate-200/60 sm:grid-cols-[120px_1fr_auto]">
       <Link
         href={`/products/${product.id}`}
         className="block overflow-hidden rounded-xl bg-slate-100"

@@ -11,8 +11,8 @@ export default function OrderSummary({ items }) {
   return (
     <Card className="space-y-5">
       <div>
-        <h2 className="text-lg font-semibold text-slate-950">Order Summary</h2>
-        <p className="mt-1 text-sm text-slate-600">
+        <h2 className="text-lg font-semibold text-slate-100">Order Summary</h2>
+        <p className="mt-1 text-sm text-slate-300">
           Review your items before placing the order.
         </p>
       </div>
@@ -34,14 +34,14 @@ export default function OrderSummary({ items }) {
               />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-slate-950">
+              <h3 className="text-sm font-semibold text-slate-100">
                 {item.product.name}
               </h3>
               <p className="mt-1 text-xs text-slate-500">
                 Qty {item.quantity} x ${item.product.price.toFixed(2)}
               </p>
             </div>
-            <p className="text-sm font-semibold text-slate-950">
+            <p className="text-sm font-semibold text-yellow-200">
               ${(item.product.price * item.quantity).toFixed(2)}
             </p>
           </div>
@@ -49,15 +49,15 @@ export default function OrderSummary({ items }) {
       </div>
 
       <div className="space-y-3 border-t border-slate-200 pt-4 text-sm">
-        <div className="flex items-center justify-between text-slate-600">
+        <div className="flex items-center justify-between text-slate-200">
           <span>Subtotal</span>
           <span>${total.toFixed(2)}</span>
         </div>
-        <div className="flex items-center justify-between text-slate-600">
+        <div className="flex items-center justify-between text-slate-200">
           <span>Shipping</span>
           <span>Free</span>
         </div>
-        <div className="flex items-center justify-between text-base font-bold text-slate-950">
+        <div className="flex items-center justify-between text-base font-bold text-slate-100">
           <span>Total</span>
           <span>${total.toFixed(2)}</span>
         </div>

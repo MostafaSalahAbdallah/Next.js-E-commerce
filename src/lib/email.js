@@ -18,13 +18,15 @@ export async function sendEmail({ to, subject, text, html }) {
   const client = getMailtrapClient();
   const from = getEmailFromAddress();
 
+  console.log("Email attempt:", { hasClient: !!client, from, to, subject });
+
   if (!client || !from || !to) {
     console.warn("Email skipped: missing client, from address, or recipient");
     return { skipped: true };
   }
 
   try {
-    await client.send({
+    const result = await client.send({
       from: {
         email: from,
         name: process.env.EMAIL_FROM_NAME || "E-Commerce Store",
@@ -35,7 +37,7 @@ export async function sendEmail({ to, subject, text, html }) {
       html,
       category: "email-verification",
     });
-
+    console.log("Email sent successfully:", result);
     return { skipped: false };
   } catch (error) {
     console.error("Failed to send email via Mailtrap:", error);

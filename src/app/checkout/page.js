@@ -139,13 +139,13 @@ export default function CheckoutPage() {
   return (
     <section className="space-y-8">
       <div className="space-y-3">
-        <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+        <p className="text-sm font-semibold uppercase tracking-wide text-violet-700">
           Checkout
         </p>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">
           Place your order
         </h1>
-        <p className="max-w-2xl text-slate-600">
+        <p className="max-w-2xl text-slate-300">
           Confirm your cart and convert it into an order.
         </p>
       </div>
@@ -157,8 +157,8 @@ export default function CheckoutPage() {
       ) : null}
 
       {success ? (
-        <Card className="space-y-4 border-emerald-200 bg-emerald-50">
-          <p className="font-semibold text-emerald-800">{success}</p>
+        <Card className="space-y-4 border-violet-200 bg-emerald-50">
+          <p className="font-semibold text-violet-800">{success}</p>
           <Button href="/products" variant="secondary">
             Continue Shopping
           </Button>
@@ -173,10 +173,10 @@ export default function CheckoutPage() {
 
       {!isLoading && !success && items.length === 0 ? (
         <Card className="space-y-4 text-center">
-          <h2 className="text-lg font-semibold text-slate-950">
+          <h2 className="text-lg font-semibold text-slate-100">
             No items to checkout
           </h2>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-300">
             Add products to your cart before placing an order.
           </p>
           <div className="flex justify-center gap-3">
@@ -193,17 +193,17 @@ export default function CheckoutPage() {
           <OrderSummary items={items} />
 
           <Card className="h-fit space-y-4">
-            <h2 className="text-lg font-semibold text-slate-950">Payment</h2>
+            <h2 className="text-lg font-semibold text-slate-100">Payment</h2>
 
-            <div className="grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
+            <div className="grid grid-cols-2 gap-2 rounded-xl bg-[#0b0f14] p-1">
               <button
                 type="button"
                 onClick={() => setPaymentMethod("stripe")}
                 className={[
                   "rounded-lg px-3 py-2 text-sm font-semibold transition-colors",
                   paymentMethod === "stripe"
-                    ? "bg-white text-slate-950 shadow-sm"
-                    : "text-slate-600 hover:text-slate-950",
+                    ? "bg-white text-slate-900 shadow-sm"
+                    : "text-slate-600 hover:text-slate-400",
                 ].join(" ")}
               >
                 Card
@@ -215,7 +215,7 @@ export default function CheckoutPage() {
                   "rounded-lg px-3 py-2 text-sm font-semibold transition-colors",
                   paymentMethod === "cash_on_delivery"
                     ? "bg-white text-slate-950 shadow-sm"
-                    : "text-slate-600 hover:text-slate-950",
+                    : "text-slate-600 hover:text-slate-400",
                 ].join(" ")}
               >
                 Cash

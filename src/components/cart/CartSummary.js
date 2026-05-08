@@ -22,8 +22,8 @@ export default function CartSummary({ items }) {
           <span>Subtotal</span>
           <span>${totalPrice.toFixed(2)}</span>
         </div>
-        <div className="flex items-center justify-between border-t border-slate-200 pt-3 text-base font-bold text-slate-950">
-          <span>Total</span>
+        <div className="flex items-center justify-between border-t border-slate-200 pt-3 text-base font-bold text-slate-100">
+          <span className="text-white">Total</span>
           <span>${totalPrice.toFixed(2)}</span>
         </div>
       </div>

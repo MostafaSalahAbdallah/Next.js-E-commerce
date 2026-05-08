@@ -116,10 +116,18 @@ export async function registerUser({ email, password, role = "customer" }) {
     emailVerificationTokenExpiresAt: codeExpiresAt,
   });
 
-  await sendVerificationCodeEmail(user, verificationCode);
+  let emailSent = false;
+  try {
+    await sendVerificationCodeEmail(user, verificationCode);
+    emailSent = true;
+  } catch (emailError) {
+    console.error("Failed to send verification email:", emailError);
+    // Don't fail registration if email fails
+  }
 
   return {
     user: sanitizeUser(user),
+    emailSent,
   };
 }
 

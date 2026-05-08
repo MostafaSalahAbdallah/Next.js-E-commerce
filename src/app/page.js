@@ -68,14 +68,14 @@ export default function HomePage() {
   return (
     
     <section className="space-y-10">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 p-4">
-  <div class="relative group">
-    <img src="https://images.pexels.com/photos/4573596/pexels-photo-4573596.jpeg" class="rounded-lg shadow-lg object-cover" alt="Corsair Keyboard"/>
-    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"></div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 p-4">
+  <div className="relative group">
+    <img src="https://images.pexels.com/photos/4573596/pexels-photo-4573596.jpeg" className="rounded-lg shadow-lg object-cover" alt="Corsair Keyboard"/>
+    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"></div>
   </div>
-  <div class="relative group">
-    <img src="https://images.pexels.com/photos/34552789/pexels-photo-34552789.jpeg" class="rounded-lg shadow-lg" alt="Corsair Keyboard"/>
-    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"></div>
+  <div className="relative group">
+    <img src="https://images.pexels.com/photos/34552789/pexels-photo-34552789.jpeg" className="rounded-lg shadow-lg" alt="Corsair Keyboard"/>
+    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"></div>
   </div>
  
  

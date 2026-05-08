@@ -4,11 +4,17 @@ import { registerUser } from "@/services/auth.service";
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { user } = await registerUser(body);
+    const { user, emailSent } = await registerUser(body);
+
+    const message = emailSent
+      ? "Registration successful! Check your Gmail for the 4-digit verification code."
+      : "Registration successful! However, we couldn't send the verification email. Please contact support or try again later.";
 
     return NextResponse.json({
-      message: "Registration successful! Check your Gmail for the 4-digit verification code.",
-      user
+      message,
+      user,
+      emailSent,
+      verificationCode: process.env.NODE_ENV === 'development' ? user.emailVerificationToken : undefined, // Show code in development
     }, { status: 201 });
   } catch (error) {
     return NextResponse.json(
